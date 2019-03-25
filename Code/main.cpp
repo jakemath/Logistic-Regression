@@ -14,18 +14,18 @@ int main(int argc, char* argv[])
     list<point> dataframe, testframe;   // Store data points in a list
     load_csv(in, dataframe);    // Each point contains a vector of feature values
     load_csv(test, testframe);
-
+    
     list<point>::iterator i = dataframe.begin();
     cout << "DATA FRAME:" << endl << endl;  // Print frames
     for (; i != dataframe.end(); ++i)
         cout << *i << endl;
-
+    
     i = testframe.begin();
     cout << endl << "TEST FRAME:" << endl << endl;
     for (; i != testframe.end(); ++i)
         cout << *i << endl;
     
-    vector<double> model = train (dataframe, 0.00000001); // Train model
+    vector<double> model = train (dataframe, 0.0005); // Train model
     list<int> predictions;  // Make predictions
     i = testframe.begin();
     for (; i != testframe.end(); ++i)
@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
     i = testframe.begin();
     j = predictions.begin();
     for (; i != testframe.end() && j != predictions.end(); ++i, ++j)
-    cout << "\t" << *j << "\t" << i -> attributes.back() << endl;
+        cout << "\t" << *j << "\t" << i -> attributes.back() << endl;
     
     cout << endl << "MODEL PARAMETERS:" << endl; // Print trained model
     vector<double>::iterator m = model.begin();
@@ -61,4 +61,3 @@ int main(int argc, char* argv[])
     cout << "1's correctly guessed: " << one_count << endl << "Accuracy: ";
     cout << (1.0 * count / predictions.size()) * 100 << "%" << endl << endl;
 }
-
