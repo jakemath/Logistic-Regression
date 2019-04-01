@@ -40,14 +40,15 @@ vector<double> train (list<point>& dataset, double lr)
     vector<double>::iterator i = model.begin();
     list<point>::iterator j;  // Iterate through dataset for each weight;
     double train_cost = cost(dataset, model);
+    int component;
+    double gradient, hypothesized, actual;
     while (train_cost > .0000001)    // Iterate until cost is minimized
     {
-        int component = 0;
+        component = 0;
         for (; i != model.end(); ++i)   // Update model using gradient descent
         {
-            double gradient = 0.0, hypothesized, actual;
+            gradient = 0.0;
             j = dataset.begin();  // Iterate through dataset for each weight
-            //x = dataset.front().attributes.begin();
             for (; j != dataset.end(); ++j)
             {
                 hypothesized = hypothesis(dot_product(model, j -> attributes));
@@ -66,16 +67,12 @@ vector<double> train (list<point>& dataset, double lr)
 
 int classify (double hypothesis, double thresh)
 {
-    if (hypothesis >+ thresh)
+    if (hypothesis >= thresh)
         return 1;
     return 0;
 }
 
-int predict (vector<double>& model, point p)
-{
-    double hypothesized = hypothesis(dot_product(model, p.attributes));
-    return classify(hypothesized, 0.996);
-}
+int predict (vector<double>& model, point p) { return classify(hypothesis(dot_product(model, p.attributes)), 0.996); }
 
 void split (const string& s, char c, point& p)  // Function for parsing comma separated values in a line of the txt file into a point instance
 {
