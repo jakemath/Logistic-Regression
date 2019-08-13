@@ -10,13 +10,15 @@
 
 int main(int argc, char* argv[])
 {
-    std::ifstream in("train_bank.txt"), test("test_bank.txt"); // Read dataframe and testframe
-    list<point> dataframe, testframe;   // Store data points in a list
-    load_csv(in, dataframe);    // Each point contains a vector of feature values
+    // Read dataframe and testframe
+    std::ifstream in("train_bank.txt"), test("test_bank.txt");
+    list<vector<double>> dataframe, testframe;
+    load_csv(in, dataframe);
     load_csv(test, testframe);
     
-    list<point>::iterator i = dataframe.begin();
-    cout << "DATA FRAME:" << endl << endl;  // Print frames
+    // Print frames and compute a threshold level
+    list<vector<double>>::iterator i = dataframe.begin();
+    cout << "DATA FRAME:" << endl << endl;
     for (; i != dataframe.end(); ++i)
         cout << *i << endl;
     
@@ -25,39 +27,58 @@ int main(int argc, char* argv[])
     for (; i != testframe.end(); ++i)
         cout << *i << endl;
     
-    vector<double> model = train (dataframe, 0.0005); // Train model
+    // Train model
+    cout << endl << "Training model... " << endl << endl;
+    vector<double> model = train(dataframe, .0001);
     list<int> predictions;  // Make predictions
+    int temp,
+    zero_correct = 0,
+    zero_incorrect = 0,
+    one_correct = 0,
+    one_incorrect = 0;
     i = testframe.begin();
     for (; i != testframe.end(); ++i)
-        predictions.push_back(predict(model, *i));
-    
-    i = testframe.begin();  // Compute accuracy
-    list<int>::iterator j = predictions.begin();
-    int count = 0, zero_count = 0, one_count = 0;
-    for (; i != testframe.end() && j != predictions.end(); ++i, ++j)
     {
-        if (*j == i -> attributes.back())
+        temp = classify(sigmoid(dot_product(model, *i)), .875);
+        if (temp == i -> back())
         {
-            count += 1;
-            if (*j == 0)
-                zero_count += 1;
+            if (temp == 0)
+                ++zero_correct;
             else
-                one_count += 1;
+                ++one_correct;
+        }
+        else
+        {
+            if (temp == 0)
+                ++zero_incorrect;
+            else
+                ++one_incorrect;
         }
     }
     
-    cout << endl << "Predicted - Actual" << endl << endl;    // Print predictions
-    i = testframe.begin();
-    j = predictions.begin();
-    for (; i != testframe.end() && j != predictions.end(); ++i, ++j)
-        cout << "\t" << *j << "\t" << i -> attributes.back() << endl;
-    
-    cout << endl << "MODEL PARAMETERS:" << endl; // Print trained model
-    vector<double>::iterator m = model.begin();
+    // Print trained model
+    cout << endl << "MODEL:" << endl;
+    cout << "H(X) = (" << *model.begin() << ")x0";
+    int count = 1;
+    vector<double>::iterator m = ++model.begin();
     for (; m != model.end(); ++m)
-        cout << *m << " ";
+    {
+        cout << " + (" << *m << ")x" + std::to_string(count);
+        ++count;
+    }
     
-    cout << endl << endl << "0's correctly guessed: " << zero_count << endl;
-    cout << "1's correctly guessed: " << one_count << endl << "Accuracy: ";
-    cout << (1.0 * count / predictions.size()) * 100 << "%" << endl << endl;
+    // Report accuracy
+    cout << endl << endl << "Points tested: " << testframe.size() << endl;
+    cout << "Correct guesses: " << zero_correct + one_correct << ", ";
+    cout << (1.0 * (zero_correct + one_correct) / testframe.size()) * 100 << "%" << endl;
+    
+    cout << endl << "0's in dataset: " << zero_correct + one_incorrect << endl;
+    cout << "0's guessed: " << zero_incorrect + zero_correct << endl;
+    cout << "0's correctly guessed: " << zero_correct << ", ";
+    cout << 1.0 * zero_correct / (zero_correct + one_incorrect) * 100 << "%" << endl;
+    
+    cout << endl << "1's in dataset: " << one_correct + zero_incorrect << endl;
+    cout << "1's guessed: " << one_correct + one_incorrect << endl;
+    cout << "1's correctly guessed: " << one_correct << ", ";
+    cout << 1.0 * one_correct / (one_correct + zero_incorrect) * 100 << "%" << endl << endl;
 }
