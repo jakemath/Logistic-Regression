@@ -24,24 +24,16 @@ using std::string;
 using std::cout;
 using std::endl;
 
-struct point // Data point struct for parsing data, values stored in list attributes
-{
-    point () {}
-    vector<double> attributes;
-};
+double sigmoid(double z);
+double dot_product(vector<double>& v1, vector<double>& v2); // Vector dot product function
+int classify(double hypothesis, double thresh); // Classify sigmoid value based on threshold
 
-double sigmoid (double z);  // Sigmoid function
-double dot_product (vector<double>& model, vector<double>& point); // Vector dot product function
-double hypothesis (double z);   // Hypothesis function
-double cost (list<point>& train_set, vector<double>& model); // Cost function
-vector<double> train (list<point>& dataset, double lr); // Model training function using gradient descent
+double cost(list<vector<double>>& dataset, vector<double>& model); // Cost function
+vector<double> train(list<vector<double>>& dataset, double lr); // Model training function
 
-int classify (double hypothesis, double thresh); // Classify hypothesized value based on threshold
-int predict (vector<double>& model, point p);
+void split(const string& s, char c, vector<double>& p);
+void load_csv(std::istream& in, list<vector<double>>& frame); // Function to create list of data points from dataset
 
-void split (const string& s, char c, point& p);
-void load_csv (std::istream& in, list<point>& frame); // Function to create list of data points from dataset
-
-std::ostream& operator << (std::ostream& out, const point& p);  // Print point
+std::ostream& operator << (std::ostream& out, const vector<double>& p);  // Print point
 
 #endif /* routines_h */
