@@ -5,7 +5,6 @@
 //  Created by Jacob Mathai on 3/15/19.
 //  Copyright © 2019 Jacob Mathai. All rights reserved.
 //
-
 #include "routines.h"
 
 int main(int argc, char* argv[])
@@ -31,7 +30,7 @@ int main(int argc, char* argv[])
     for (i = testframe.begin(); i != testframe.end(); ++i)
     {
         guess = classify(sigmoid(dot_product(model, *i)), .875);
-        if (guess == i -> back())
+        if (guess == i->back())
         {
             if (guess == 0)
                 ++zero_correct;
