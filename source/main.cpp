@@ -7,8 +7,7 @@
 //
 #include "routines.h"
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
     // Read dataframe and testframe
     std::ifstream in("train_bank.txt"), test("test_bank.txt");
     list<vector<double>> dataframe, testframe;
@@ -27,11 +26,9 @@ int main(int argc, char* argv[])
     vector<double> model = train(dataframe, .0001);
     list<int> predictions;  // Make predictions
     int guess, zero_correct = 0, zero_incorrect = 0, one_correct = 0, one_incorrect = 0;
-    for (i = testframe.begin(); i != testframe.end(); ++i)
-    {
+    for (i = testframe.begin(); i != testframe.end(); ++i) {
         guess = classify(sigmoid(dot_product(model, *i)), .875);
-        if (guess == i->back())
-        {
+        if (guess == i->back()) {
             if (guess == 0)
                 ++zero_correct;
             else
@@ -47,8 +44,7 @@ int main(int argc, char* argv[])
     cout << "H(X) = (" << *model.begin() << ")x0";
     int count = 1;
     vector<double>::iterator param = ++model.begin();
-    for (vector<double>::iterator param = ++model.begin(); param != model.end(); ++param)
-    {
+    for (vector<double>::iterator param = ++model.begin(); param != model.end(); ++param) {
         cout << " + (" << *param << ")x" + std::to_string(count);
         ++count;
     }
